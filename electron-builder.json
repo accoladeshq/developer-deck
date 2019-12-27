@@ -22,7 +22,7 @@
   ],
   "win": {
     "icon": "dist/portal",
-    "target": ["portable"]
+    "target": ["squirrel"]
   },
   "mac": {
     "icon": "dist/portal",
