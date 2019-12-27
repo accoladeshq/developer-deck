@@ -24,8 +24,12 @@
             "tsConfig": "projects/portal/tsconfig.app.json",
             "aot": false,
             "assets": [
+              "projects/portal/src/assets",
               "projects/portal/src/favicon.ico",
-              "projects/portal/src/assets"
+              "projects/portal/src/favicon.png",
+              "projects/portal/src/favicon.icns",
+              "projects/portal/src/favicon.256x256.png",
+              "projects/portal/src/favicon.512x512.png"
             ],
             "styles": [
               "projects/portal/src/styles.scss"
