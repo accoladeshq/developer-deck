@@ -4,7 +4,9 @@ import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { container } from 'tsyringe';
-import { ConsoleLoggerService, Logger } from './services/logger.service';
+import { Logger } from './services/logger.service';
+import { FileLoggerService } from './services/file-logger.service';
+import { ConsoleLoggerService } from './services/console-logger.service';
 
 export class Application {
 
@@ -38,12 +40,13 @@ export class Application {
    * @param localMode If the application run in local mode or not
    */
   constructor(localMode: boolean, baseDir: string) {
-    this.registerServices();
-
     this._app = app;
     this._shell = null;
     this._localMode = localMode;
     this._baseDir = baseDir;
+
+    this.registerServices();
+
     this._logger = container.resolve<Logger>('Logger');
   }
 
@@ -64,7 +67,13 @@ export class Application {
    * Register dependency injection services
    */
   private registerServices() {
-    container.register<Logger>('Logger', { useClass: ConsoleLoggerService });
+
+    if (this._localMode) {
+      container.register<Logger>('Logger', { useClass: ConsoleLoggerService });
+    } else {
+      container.register<Logger>('Logger', { useClass: FileLoggerService });
+    }
+
   }
 
   /**
