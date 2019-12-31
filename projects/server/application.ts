@@ -4,6 +4,7 @@ import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { container } from 'tsyringe';
+import { autoUpdater } from 'electron-updater';
 import { Logger } from './services/logger/logger.service';
 import { FileLoggerService } from './services/logger/file-logger.service';
 import { ConsoleLoggerService } from './services/logger/console-logger.service';
@@ -98,6 +99,35 @@ export class Application implements Loggable {
     this._logger.debug(this, 'Application is ready');
 
     this.initializeShell();
+
+    this.checkUpdates();
+  }
+
+  /**
+   * Check if the application has updates
+   */
+  private checkUpdates(): void {
+    this._logger.debug(this, 'Check for updates');
+    const log = require('electron-log');
+
+    const loggableUpdate: Loggable = {
+      tag: 'Updater'
+    };
+
+    if (this._localMode) {
+      log.transports.file.level = 'debug';
+    } else {
+      log.transports.file.level = 'info';
+    }
+
+    autoUpdater.logger = {
+      error: (message) => this._logger.error(loggableUpdate, message),
+      info: (message) => this._logger.info(loggableUpdate, message),
+      warn: (message) => this._logger.warn(loggableUpdate, message),
+      debug: (message) => this._logger.debug(loggableUpdate, message)
+    };
+
+    autoUpdater.checkForUpdatesAndNotify();
   }
 
   /**

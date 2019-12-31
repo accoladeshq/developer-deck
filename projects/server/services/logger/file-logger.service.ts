@@ -17,7 +17,25 @@ export class FileLoggerService extends LoggerBase implements Logger {
    * Log a debug message
    * @param message The message to log
    */
-  debug(issuer: Loggable | string, message: string) {
+  public debug(issuer: Loggable | string, message: string) {
     log.debug(this.formatMessage(issuer, message));
+  }
+
+  /**
+   * Log a warning message
+   * @param issuer The message's issuer
+   * @param message The message to log
+   */
+  public warn(issuer: string | Loggable, message: string) {
+    log.warn(this.formatMessage(issuer, message));
+  }
+
+  /**
+   * Log an error message
+   * @param issuer The message's issuer
+   * @param message The message to log
+   */
+  public error(issuer: string | Loggable, message: string) {
+    log.error(this.formatMessage(issuer, message));
   }
 }
