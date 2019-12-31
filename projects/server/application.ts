@@ -7,8 +7,9 @@ import { container } from 'tsyringe';
 import { Logger } from './services/logger/logger.service';
 import { FileLoggerService } from './services/logger/file-logger.service';
 import { ConsoleLoggerService } from './services/logger/console-logger.service';
+import { Loggable } from './services/logger/loggable';
 
-export class Application {
+export class Application implements Loggable {
 
   /**
    * The service who manage logs
@@ -51,15 +52,21 @@ export class Application {
   }
 
   /**
+   * Gets the class tag
+   */
+  public get tag(): string {
+    return 'Application';
+  }
+
+  /**
    * Bootstrap the application
    */
   public bootstrap(): void {
-    this._logger.info(`Bootstrap application in ${this._localMode ? 'local mode' : 'production mode'}`);
+    this._logger.info(this, `Bootstrap in ${this._localMode ? 'local mode' : 'production mode'}`);
 
-    this._logger.debug('Registering application events');
+    this._logger.debug(this, 'Registering events');
     this.registerEvents();
 
-    this._logger.debug('Enabling local mode if needed');
     this.enableHotReload();
   }
 
@@ -88,8 +95,8 @@ export class Application {
    * Occurs when the application is ready
    */
   private onReady(): void {
-    this._logger.debug('Application is ready');
-    // test
+    this._logger.debug(this, 'Application is ready');
+
     this.initializeShell();
   }
 
@@ -99,16 +106,16 @@ export class Application {
   private initializeShell(): void {
 
     if (this._shell != null) {
-      this._logger.debug('Shell already exist, passing initialization');
+      this._logger.debug(this, 'Shell already exist, passing initialization');
       return;
     }
 
-    this._logger.debug('Initialize shell');
+    this._logger.debug(this, 'Initialize shell');
 
     const shell = this.createShell();
     const homePage = this.getHomePageUrl();
 
-    this._logger.debug(`Navigating to home page ${homePage}`);
+    this._logger.debug(this, `Navigating to home page ${homePage}`);
     shell.loadURL(homePage);
 
     if (this._localMode) {
@@ -144,7 +151,7 @@ export class Application {
    * Occurs when the shell is closed
    */
   private onShellClosed(): void {
-    this._logger.debug('Shell is closed, deallocating...');
+    this._logger.debug(this, 'Shell closed, deallocating...');
     if (this._shell != null) {
       this._shell = null;
     }
@@ -154,7 +161,7 @@ export class Application {
    * Occurs when the app is activate
    */
   private onActivated(): void {
-    this._logger.debug('Applicaiton is activated');
+    this._logger.debug(this, 'Applicaiton is activated');
     this.initializeShell();
   }
 
@@ -162,7 +169,7 @@ export class Application {
    * Occurs when all window are closed
    */
   private onAllWindowClosed(): void {
-    this._logger.debug('All window are closed');
+    this._logger.debug(this, 'All window are closed');
 
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -176,11 +183,11 @@ export class Application {
    */
   private enableHotReload(): void {
     if (!this._localMode) {
-      this._logger.debug('Application is in local mode, hot reload not enable');
+      this._logger.debug(this, 'Hot reload not available');
       return;
     }
 
-    this._logger.debug('Application is in local mode, enabling hot reload');
+    this._logger.debug(this, 'Enabling hot reload');
     require('electron-reload')(this._baseDir, {
       electron: require(`${this._baseDir}/node_modules/electron`),
       argv: ['--serve']
