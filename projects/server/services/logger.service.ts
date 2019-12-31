@@ -7,3 +7,9 @@ export class ConsoleLoggerService {
     console.log(message);
   }
 }
+
+export interface Logger {
+  info(message: string);
+
+  debug(message: string);
+}

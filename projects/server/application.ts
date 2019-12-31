@@ -1,14 +1,17 @@
+import 'reflect-metadata';
+
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { ConsoleLoggerService } from './services/logger.service';
+import { container } from 'tsyringe';
+import { ConsoleLoggerService, Logger } from './services/logger.service';
 
 export class Application {
 
   /**
    * The service who manage logs
    */
-  private readonly _logger: ConsoleLoggerService;
+  private readonly _logger: Logger;
 
   /**
    * The electron application
@@ -35,11 +38,13 @@ export class Application {
    * @param localMode If the application run in local mode or not
    */
   constructor(localMode: boolean, baseDir: string) {
+    this.registerServices();
+
     this._app = app;
     this._shell = null;
     this._localMode = localMode;
     this._baseDir = baseDir;
-    this._logger = new ConsoleLoggerService();
+    this._logger = container.resolve<Logger>('Logger');
   }
 
   /**
@@ -53,6 +58,13 @@ export class Application {
 
     this._logger.debug('Enabling local mode if needed');
     this.enableHotReload();
+  }
+
+  /**
+   * Register dependency injection services
+   */
+  private registerServices() {
+    container.register<Logger>('Logger', { useClass: ConsoleLoggerService });
   }
 
   /**
