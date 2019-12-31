@@ -1,0 +1,42 @@
+name: Windows Release
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: [windows-latest]
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - name: Download Sources
+      uses: actions/checkout@v1
+    - name: Fetch tags and master for GitVersion
+      run: |
+        git fetch --tags
+        git branch --create-reflog master origin/master
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install GitVersion
+      uses: gittools/actions/setup-gitversion@v0.3
+      with:
+          versionSpec: '5.1.x'
+    - name: Use GitVersion
+      id: gitversion # step id used as reference for output values
+      uses: gittools/actions/execute-gitversion@v0.3
+    - run: |
+        npm version "${{ steps.gitversion.outputs.semver }}" --no-git-tag-version
+    - name: Install Dependencies
+      run: npm ci
+      env:
+        CI: true
+    - name: Package for Windows
+      run: npm run electron:windows
+      env:
+        CI: true
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
