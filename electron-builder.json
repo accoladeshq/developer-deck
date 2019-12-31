@@ -22,7 +22,8 @@
   ],
   "win": {
     "icon": "dist/portal",
-    "target": ["nsis"]
+    "target": ["nsis"],
+    "artifactName": "${productName}-${version}.${ext}"
   },
   "mac": {
     "icon": "dist/portal",
