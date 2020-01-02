@@ -6,7 +6,7 @@
     "url": "https://github.com/authfix"
   },
   "description": "Application who help to manage developer life",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",

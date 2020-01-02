@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, Tray, Menu } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { container } from 'tsyringe';
@@ -36,6 +36,11 @@ export class Application implements Loggable {
    * The application shell
    */
   private _shell: BrowserWindow;
+
+  /**
+   * The application tray
+   */
+  private _tray: Tray;
 
   /**
    * Initialize a new @{Application}
@@ -135,7 +140,7 @@ export class Application implements Loggable {
    */
   private initializeShell(): void {
 
-    if (this._shell != null) {
+    if (this._shell !== null) {
       this._logger.debug(this, 'Shell already exist, passing initialization');
       return;
     }
@@ -143,6 +148,8 @@ export class Application implements Loggable {
     this._logger.debug(this, 'Initialize shell');
 
     const shell = this.createShell();
+    this._shell = shell;
+
     const homePage = this.getHomePageUrl();
 
     this._logger.debug(this, `Navigating to home page ${homePage}`);
@@ -150,6 +157,11 @@ export class Application implements Loggable {
 
     if (this._localMode) {
       shell.webContents.openDevTools();
+    }
+
+    if (this._tray != null) {
+      this._tray.destroy();
+      this._tray = null;
     }
   }
 
@@ -182,7 +194,7 @@ export class Application implements Loggable {
    */
   private onShellClosed(): void {
     this._logger.debug(this, 'Shell closed, deallocating...');
-    if (this._shell != null) {
+    if (this._shell !== null) {
       this._shell = null;
     }
   }
@@ -204,8 +216,34 @@ export class Application implements Loggable {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
-      app.quit();
     }
+
+    this.createTray();
+  }
+
+  /**
+   * Create the application tray
+   */
+  private createTray(): void {
+    this._logger.debug(this, 'Creating application tray');
+
+    const applicationTray = new Tray(path.join(this._baseDir, 'projects', 'portal', 'src', 'favicon.ico'));
+
+    applicationTray.on('double-click', () => {
+      this.initializeShell();
+    });
+
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Open', type: 'normal', click: () => {
+          this.initializeShell();
+        }
+      },
+      { label: 'Quit', type: 'normal', click: () => app.quit() }
+    ]);
+
+    applicationTray.setContextMenu(contextMenu);
+    this._tray = applicationTray;
   }
 
   /**
