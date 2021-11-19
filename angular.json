@@ -22,7 +22,6 @@
             "main": "projects/portal/src/main.ts",
             "polyfills": "projects/portal/src/polyfills.ts",
             "tsConfig": "projects/portal/tsconfig.app.json",
-            "aot": false,
             "assets": [
               "projects/portal/src/assets",
               "projects/portal/src/favicon.ico",
@@ -34,7 +33,13 @@
             "styles": [
               "projects/portal/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -47,9 +52,7 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -66,7 +69,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -100,19 +104,6 @@
               "projects/portal/src/styles.scss"
             ],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/portal/tsconfig.app.json",
-              "projects/portal/tsconfig.spec.json",
-              "projects/portal/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         },
         "e2e": {
