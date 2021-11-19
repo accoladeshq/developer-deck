@@ -35,12 +35,12 @@ export class Application implements Loggable {
   /**
    * The application shell
    */
-  private _shell: BrowserWindow;
+  private _shell: BrowserWindow | null;
 
   /**
    * The application tray
    */
-  private _tray: Tray;
+  private _tray: Tray | null;
 
   /**
    * Initialize a new @{Application}
@@ -48,6 +48,7 @@ export class Application implements Loggable {
    */
   constructor(localMode: boolean, baseDir: string) {
     this._app = app;
+    this._tray = null;
     this._shell = null;
     this._localMode = localMode;
     this._baseDir = baseDir;
