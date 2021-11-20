@@ -1,3 +1,71 @@
 :host {
-  display: block;
+  display: flex;
+  height: inherit;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.login-wrapper {
+  position: relative;
+}
+
+.login-logo {
+  position: absolute;
+  width: 125px;
+
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+
+  transform: translate(0, -50%);
+}
+
+.login-panel {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  .login-title {
+    font-size: 3.5rem;
+    font-weight: bolder;
+
+    text-transform: uppercase;
+    letter-spacing: .15rem;
+
+    span {
+      font-size: 2.75rem;
+    }
+  }
+
+  .login-description {
+    font-size: .75rem;
+    font-weight: 100;
+    margin-bottom: 2rem;
+
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: .1rem;
+
+    max-width: 250px;
+
+    opacity: .8;
+
+  }
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  padding: .25rem;;
+
+  text-transform: uppercase;
+
+  img{
+    display: block;
+    width: 25px;
+    margin-right: .75rem;
+  }
 }

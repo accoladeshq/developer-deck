@@ -5,13 +5,18 @@ import { AuthenticationGuard } from '../libs/core/authentication/authentication.
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'login',
+    loadChildren: () => import('../../src/libs/pages/login/login.module').then(m => m.LoginModule)
+  },
+  {
+    path: 'home',
     loadChildren: () => import('../libs/pages/home/home.module').then(m => m.HomeModule),
     canActivate: [AuthenticationGuard]
   },
   {
-    path: 'login',
-    loadChildren: () => import('../../src/libs/pages/login/login.module').then(m => m.LoginModule)
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'home'
   }
 ];
 
